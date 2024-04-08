@@ -1,8 +1,12 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
+const { nextui } = require("@nextui-org/react");
 
 module.exports = {
-  content: ["./app/**/*.{ts,tsx,jsx,js}"],
-  plugins: [],
+  content: [
+    "./app/**/*.{ts,tsx,jsx,js}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
+  plugins: [nextui()],
   theme: {
     fontFamily: {
       ...defaultTheme.fontFamily,
@@ -13,7 +17,7 @@ module.exports = {
     },
     fontSize: {
       // names come from the figma file
-      // desktop paragraph small -> d-p-s
+      // desktop paragraph small -> d-p-sm
       "d-p-xs": ["12px", "18px"],
       "d-p-sm": ["16px", "24px"],
       "d-p-lg": ["20px", "32px"],
@@ -22,7 +26,7 @@ module.exports = {
       "d-h1": ["64px", "72px"],
       "d-j": ["72px", "64px"],
 
-      // mobile paragraph small -> d-m-s
+      // mobile paragraph small -> m-p-sm
       "m-p-xs": ["12px", "18px"],
       "m-p-sm": ["14px", "24px"],
       "m-p-lg": ["18px", "32px"],

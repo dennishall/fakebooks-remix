@@ -9,11 +9,13 @@ const getDaysToDueDate = (date: Date) =>
     (date.getTime() - asUTC(new Date()).getTime()) / (1000 * 60 * 60 * 24)
   );
 
-export function getInvoiceDerivedData(invoice: {
-  dueDate: Date;
-  lineItems: Array<{ quantity: number; unitPrice: number }>;
-  deposits: Array<{ amount: number }>;
-}) {
+export function getInvoiceDerivedData(
+    invoice: {
+      dueDate: Date;
+      lineItems: Array<{ quantity: number; unitPrice: number }>;
+      deposits: Array<{ amount: number }>;
+    }
+) {
   const daysToDueDate = getDaysToDueDate(invoice.dueDate);
 
   const totalAmount = invoice.lineItems.reduce(

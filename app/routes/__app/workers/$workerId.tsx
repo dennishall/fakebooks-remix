@@ -8,15 +8,15 @@ import {
   useLocation,
   useParams,
 } from "@remix-run/react";
+import type { Password, User } from "@prisma/client";
 import { inputClasses, LabelText, submitButtonClasses } from "~/components";
-import { getInvoiceDetails } from "~/models/invoice.server";
-import type { LineItem, DueStatus } from "~/models/invoice.server";
 import { requireUser } from "~/session.server";
 import { currencyFormatter, parseDate } from "~/utils";
-import type { Deposit } from "~/models/deposit.server";
-import { createDeposit } from "~/models/deposit.server";
+import {createDeposit, Deposit} from "~/models/deposit.server";
 import invariant from "tiny-invariant";
 import { useEffect, useRef } from "react";
+import {getUserById} from "~/models/user.server";
+import {DueStatus, LineItem} from "~/models/invoice.server";
 
 type LoaderData = {
   customerName: string;
@@ -26,42 +26,24 @@ type LoaderData = {
   dueDisplay: string;
   invoiceDateDisplay: string;
   lineItems: Array<
-    Pick<LineItem, "id" | "quantity" | "unitPrice" | "description">
-  >;
+      Pick<LineItem, "id" | "quantity" | "unitPrice" | "description">
+      >;
   deposits: Array<
-    Pick<Deposit, "id" | "amount"> & { depositDateFormatted: string }
-  >;
+      Pick<Deposit, "id" | "amount"> & { depositDateFormatted: string }
+      >;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   await requireUser(request);
-  const { invoiceId } = params;
-  if (typeof invoiceId !== "string") {
-    throw new Error("This should be unpossible.");
+  const { workerId } = params;
+  if (typeof workerId !== "string") {
+    throw new Error("This should be impossible.");
   }
-  const invoiceDetails = await getInvoiceDetails(invoiceId);
-  if (!invoiceDetails) {
+  const worker = await getUserById(workerId);
+  if (!worker) {
     throw new Response("not found", { status: 404 });
   }
-  return json<LoaderData>({
-    customerName: invoiceDetails.invoice.customer.name,
-    customerId: invoiceDetails.invoice.customer.id,
-    totalAmount: invoiceDetails.totalAmount,
-    dueStatus: invoiceDetails.dueStatus,
-    dueDisplay: invoiceDetails.dueStatusDisplay,
-    invoiceDateDisplay: invoiceDetails.invoice.invoiceDate.toLocaleDateString(),
-    lineItems: invoiceDetails.invoice.lineItems.map((li) => ({
-      id: li.id,
-      description: li.description,
-      quantity: li.quantity,
-      unitPrice: li.unitPrice,
-    })),
-    deposits: invoiceDetails.invoice.deposits.map((deposit) => ({
-      id: deposit.id,
-      amount: deposit.amount,
-      depositDateFormatted: deposit.depositDate.toLocaleDateString(),
-    })),
-  });
+  return json<User>(worker);
 };
 
 type ActionData = {
@@ -128,49 +110,27 @@ export const action: ActionFunction = async ({ request, params }) => {
 const lineItemClassName =
   "flex justify-between border-t border-gray-100 py-4 text-[14px] leading-[24px]";
 
-export default function InvoiceRoute() {
+export default function WorkerRoute() {
   const data = useLoaderData() as LoaderData;
   const location = useLocation();
   return (
     <div className="relative p-10" key={location.key}>
-      <Link
-        to={`../../customers/${data.customerId}`}
-        className="text-[length:14px] font-bold leading-6 text-blue-600 underline"
-      >
-        {data.customerName}
-      </Link>
-      <div className="text-[length:32px] font-bold leading-[40px]">
-        {currencyFormatter.format(data.totalAmount)}
-      </div>
-      <LabelText>
-        <span
-          className={
-            data.dueStatus === "paid"
-              ? "text-green-brand"
-              : data.dueStatus === "overdue"
-              ? "text-red-brand"
-              : ""
-          }
-        >
-          {data.dueDisplay}
-        </span>
-        {` • Invoiced ${data.invoiceDateDisplay}`}
-      </LabelText>
       <div className="h-4" />
-      {data.lineItems.map((item) => (
-        <LineItemDisplay
-          key={item.id}
-          description={item.description}
-          unitPrice={item.unitPrice}
-          quantity={item.quantity}
-        />
-      ))}
-      <div className={`${lineItemClassName} font-bold`}>
-        <div>Net Total</div>
-        <div>{currencyFormatter.format(data.totalAmount)}</div>
+      <div>
+        Name: {data.name}
       </div>
-      <div className="h-8" />
-      <Deposits />
+      <div>
+        Email: {data.email}
+      </div>
+      <div>
+        Phone: {data.phone}
+      </div>
+      <div>
+        Start: {data.createdAt}
+      </div>
+      <div>
+        Last Seen: {data.updatedAt}
+      </div>
     </div>
   );
 }

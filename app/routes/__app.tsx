@@ -5,7 +5,6 @@ import {
   FullFakebooksLogo,
   LogoutIcon,
   Spinner,
-  UpRightArrowIcon,
 } from "~/components";
 
 export default function AppRoute() {
@@ -33,15 +32,10 @@ export default function AppRoute() {
           <div className="flex flex-col font-bold text-gray-800">
             <NavItem to="dashboard">Dashboard</NavItem>
             <NavItem to="accounts">Accounts</NavItem>
+            <NavItem to="workers">Workers</NavItem>
             <NavItem to="sales">Sales</NavItem>
             <NavItem to="expenses">Expenses</NavItem>
             <NavItem to="reports">Reports</NavItem>
-            <a
-              href="https://github.com/kentcdodds/fakebooks-remix"
-              className="my-1 flex gap-1 py-1 px-2 pr-16 text-[length:14px]"
-            >
-              GitHub <UpRightArrowIcon />
-            </a>
 
             <Form
               method="post"

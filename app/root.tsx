@@ -20,6 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Dialog } from "@reach/dialog";
 import reachDialogStylesheet from "@reach/dialog/styles.css";
 import { getUser } from "./session.server";
+import {NextUIProvider} from "@nextui-org/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { dangerButtonClasses, submitButtonClasses } from "./components";
@@ -56,11 +57,13 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
-        {user ? <LogoutTimer /> : null}
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <NextUIProvider>
+          <Outlet />
+          {user ? <LogoutTimer /> : null}
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </NextUIProvider>
       </body>
     </html>
   );

@@ -12,3 +12,10 @@ The main objective of this comparison (currently) is to demonstrate the UX and D
 Please do dig into the code and compare the level of complexity. Keep in mind that a CRA app is only half the story. You need a backend. This Remix app's backend is used to handle that for the CRA version.
 
 Another thing to keep in mind is that this app doesn't handle mutations (yet?). Adding mutation support would drastically complicate the CRA implementation, but would be a pretty simple thing to handle for Remix.
+
+## Instructions
+
+Run SETUP first - it seeds the database.
+
+- `npm run setup`
+- `npm run dev`
